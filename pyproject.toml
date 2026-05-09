@@ -1,0 +1,13 @@
+[project]
+name = "two-way-sync"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fake>=0.8",
+    "faker>=40.15.0",
+    "fastapi>=0.136.1",
+    "requests>=2.33.1",
+]
