@@ -29,3 +29,7 @@ mockoon-mcp-server
 
 # Database
 db-data
+
+# Logs
+logs/*.log
+logs/*.log.*
