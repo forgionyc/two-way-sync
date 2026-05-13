@@ -13,5 +13,19 @@ wheels/
 # Node modules
 node_modules
 
+# OS generated files
+.DS_Store
+
+# IDEs
+.idea
+.vscode
+.claude
+
+# Ruff
+.ruff_cache
+
 # Mcp
 mockoon-mcp-server
+
+# Database
+db-data

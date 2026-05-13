@@ -1,0 +1,465 @@
+{
+  "uuid": "8ceff7fe-3c1e-4920-8e13-7721364595c7",
+  "lastMigration": 33,
+  "name": "QuickBooks Invoicing API",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 4000,
+  "hostname": "",
+  "routes": [
+    {
+      "uuid": "ed795289-fc10-4b61-b394-8db3a986421a",
+      "type": "http",
+      "documentation": "Create, delete, or void an invoice",
+      "method": "post",
+      "endpoint": "v3/company/:companyId/invoice",
+      "responses": [
+        {
+          "uuid": "76721877-6e8f-4ada-87be-8a357f19c67f",
+          "body": "{\n  \"Invoice\": {\n    \"TxnDate\": \"2015-07-24\",\n    \"domain\": \"QBO\",\n    \"PrintStatus\": \"NeedToPrint\",\n    \"TotalAmt\": 100.0,\n    \"Line\": [\n      {\n        \"LineNum\": 1,\n        \"Amount\": 100.0,\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"NON\"\n          },\n          \"ItemRef\": {\n            \"name\": \"Services\",\n            \"value\": \"1\"\n          }\n        },\n        \"Id\": \"1\",\n        \"DetailType\": \"SalesItemLineDetail\"\n      },\n      {\n        \"DetailType\": \"SubTotalLineDetail\",\n        \"Amount\": 100.0,\n        \"SubTotalLineDetail\": {}\n      }\n    ],\n    \"DueDate\": \"2015-08-23\",\n    \"ApplyTaxAfterDiscount\": false,\n    \"DocNumber\": \"1069\",\n    \"sparse\": false,\n    \"ProjectRef\": {\n      \"value\": \"39298034\"\n    },\n    \"Deposit\": 0,\n    \"Balance\": 100.0,\n    \"CustomerRef\": {\n      \"name\": \"Amy's Bird Sanctuary\",\n      \"value\": \"1\"\n    },\n    \"TxnTaxDetail\": {\n      \"TotalTax\": 0\n    },\n    \"SyncToken\": \"0\",\n    \"LinkedTxn\": [],\n    \"ShipAddr\": {\n      \"City\": \"Bayshore\",\n      \"Line1\": \"4581 Finch St.\",\n      \"PostalCode\": \"94326\",\n      \"Lat\": \"INVALID\",\n      \"Long\": \"INVALID\",\n      \"CountrySubDivisionCode\": \"CA\",\n      \"Id\": \"109\"\n    },\n    \"EmailStatus\": \"NotSet\",\n    \"BillAddr\": {\n      \"City\": \"Bayshore\",\n      \"Line1\": \"4581 Finch St.\",\n      \"PostalCode\": \"94326\",\n      \"Lat\": \"INVALID\",\n      \"Long\": \"INVALID\",\n      \"CountrySubDivisionCode\": \"CA\",\n      \"Id\": \"2\"\n    },\n    \"MetaData\": {\n      \"CreateTime\": \"2015-07-24T10:33:39-07:00\",\n      \"LastUpdatedTime\": \"2015-07-24T10:33:39-07:00\"\n    },\n    \"CustomField\": [\n      {\n        \"DefinitionId\": \"1\",\n        \"Type\": \"StringType\",\n        \"Name\": \"Crew #\"\n      }\n    ],\n    \"Id\": \"238\"\n  },\n  \"time\": \"2015-07-24T10:33:39.11-07:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Create invoice (default)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": [
+            {
+              "uuid": "cb110001-0000-0000-0000-000000000001",
+              "latency": 0,
+              "name": "Notify invoice created",
+              "enabled": true,
+              "environmentCallbackUUID": "cb110001-0000-0000-0000-000000000001"
+            }
+          ]
+        },
+        {
+          "uuid": "8bb5a2f8-6e7d-445f-8dbb-f636f6c3c520",
+          "body": "{\n  \"Invoice\": {\n    \"status\": \"Deleted\",\n    \"domain\": \"QBO\",\n    \"Id\": \"33\"\n  },\n  \"time\": \"2013-03-15T00:18:15.322-07:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Delete invoice",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "operation",
+              "value": "delete",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [
+            {
+              "uuid": "cb110001-0000-0000-0000-000000000002",
+              "latency": 0,
+              "name": "Notify invoice deleted",
+              "enabled": true,
+              "environmentCallbackUUID": "cb110001-0000-0000-0000-000000000002"
+            }
+          ]
+        },
+        {
+          "uuid": "a16665ac-f5a3-4304-b31b-cfed1c6e580c",
+          "body": "{\n  \"Invoice\": {\n    \"AllowOnlineACHPayment\": false,\n    \"domain\": \"QBO\",\n    \"TxnDate\": \"2014-11-09\",\n    \"PrintStatus\": \"NEED_TO_PRINT\",\n    \"SalesTermRef\": {\n      \"value\": \"3\"\n    },\n    \"TotalAmt\": 0,\n    \"Line\": [\n      {\n        \"Description\": \"Sod\",\n        \"DetailType\": \"SALES_ITEM_LINE_DETAIL\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"TAX\"\n          },\n          \"Qty\": 0,\n          \"ItemRef\": {\n            \"name\": \"Sod\",\n            \"value\": \"14\"\n          }\n        },\n        \"LineNum\": 1,\n        \"Amount\": 0,\n        \"Id\": \"1\"\n      },\n      {\n        \"Description\": \"2 cubic ft. bag\",\n        \"DetailType\": \"SALES_ITEM_LINE_DETAIL\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"TAX\"\n          },\n          \"Qty\": 0,\n          \"ItemRef\": {\n            \"name\": \"Soil\",\n            \"value\": \"15\"\n          }\n        },\n        \"LineNum\": 2,\n        \"Amount\": 0,\n        \"Id\": \"2\"\n      },\n      {\n        \"Description\": \"Weekly Gardening Service\",\n        \"DetailType\": \"SALES_ITEM_LINE_DETAIL\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"NON\"\n          },\n          \"Qty\": 0,\n          \"ItemRef\": {\n            \"name\": \"Gardening\",\n            \"value\": \"6\"\n          }\n        },\n        \"LineNum\": 3,\n        \"Amount\": 0,\n        \"Id\": \"3\"\n      },\n      {\n        \"Description\": \"Rock Fountain\",\n        \"DetailType\": \"SALES_ITEM_LINE_DETAIL\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"TAX\"\n          },\n          \"Qty\": 0,\n          \"ItemRef\": {\n            \"name\": \"Rock Fountain\",\n            \"value\": \"5\"\n          }\n        },\n        \"LineNum\": 4,\n        \"Amount\": 0,\n        \"Id\": \"4\"\n      },\n      {\n        \"Description\": \"Fountain Pump\",\n        \"DetailType\": \"SALES_ITEM_LINE_DETAIL\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"TAX\"\n          },\n          \"Qty\": 0,\n          \"ItemRef\": {\n            \"name\": \"Pump\",\n            \"value\": \"11\"\n          }\n        },\n        \"LineNum\": 5,\n        \"Amount\": 0,\n        \"Id\": \"5\"\n      },\n      {\n        \"DetailType\": \"SUB_TOTAL_LINE_DETAIL\",\n        \"Amount\": 0,\n        \"SubTotalLineDetail\": {}\n      }\n    ],\n    \"DueDate\": \"2014-12-09\",\n    \"MetaData\": {\n      \"CreateTime\": \"2014-11-09T13:15:36-08:00\",\n      \"LastUpdatedTime\": \"2016-03-16T12:27:10-07:00\"\n    },\n    \"DocNumber\": \"1036\",\n    \"PrivateNote\": \"Voided\",\n    \"sparse\": false,\n    \"CustomerMemo\": {\n      \"value\": \"Thank you for your business and have a great day!\"\n    },\n    \"ProjectRef\": {\n      \"value\": \"39298045\"\n    },\n    \"Deposit\": 0,\n    \"Balance\": 0,\n    \"CustomerRef\": {\n      \"name\": \"0969 Ocean View Road\",\n      \"value\": \"8\"\n    },\n    \"TxnTaxDetail\": {\n      \"TotalTax\": 0\n    },\n    \"AllowOnlineCreditCardPayment\": false,\n    \"SyncToken\": \"1\",\n    \"LinkedTxn\": [],\n    \"BillEmail\": {\n      \"Address\": \"Sporting_goods@intuit.com\"\n    },\n    \"ShipAddr\": {\n      \"City\": \"Middlefield\",\n      \"Line1\": \"370 Easy St.\",\n      \"PostalCode\": \"94482\",\n      \"Lat\": \"37.4031672\",\n      \"Long\": \"-122.0642815\",\n      \"CountrySubDivisionCode\": \"CA\",\n      \"Id\": \"8\"\n    },\n    \"EmailStatus\": \"NOT_SET\",\n    \"BillAddr\": {\n      \"Line4\": \"Middlefield, CA  94482\",\n      \"Line3\": \"370 Easy St.\",\n      \"Line2\": \"Freeman Sporting Goods\",\n      \"Line1\": \"Sasha Tillou\",\n      \"Long\": \"INVALID\",\n      \"Lat\": \"INVALID\",\n      \"Id\": \"94\"\n    },\n    \"ApplyTaxAfterDiscount\": false,\n    \"CustomField\": [\n      {\n        \"DefinitionId\": \"1\",\n        \"StringValue\": \"105\",\n        \"Type\": \"STRING_TYPE\",\n        \"Name\": \"Crew #\"\n      }\n    ],\n    \"Id\": \"129\",\n    \"AllowOnlinePayment\": false,\n    \"AllowIPNPayment\": false\n  },\n  \"time\": \"2016-03-16T12:27:10.711-07:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Void invoice",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "operation",
+              "value": "void",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [
+            {
+              "uuid": "cb110001-0000-0000-0000-000000000003",
+              "latency": 0,
+              "name": "Notify invoice voided",
+              "enabled": true,
+              "environmentCallbackUUID": "cb110001-0000-0000-0000-000000000003"
+            }
+          ]
+        },
+        {
+          "uuid": "d1e2f3a4-b5c6-4d7e-8f9a-0b1c2d3e4f5a",
+          "body": "{\"Invoice\":{\"TxnDate\":\"2015-07-24\",\"domain\":\"QBO\",\"PrintStatus\":\"NeedToPrint\",\"TotalAmt\":100.0,\"Line\":[{\"LineNum\":1,\"Amount\":100.0,\"SalesItemLineDetail\":{\"TaxCodeRef\":{\"value\":\"NON\"},\"ItemRef\":{\"name\":\"Services\",\"value\":\"1\"}},\"Id\":\"1\",\"DetailType\":\"SalesItemLineDetail\"},{\"DetailType\":\"SubTotalLineDetail\",\"Amount\":100.0,\"SubTotalLineDetail\":{}}],\"DueDate\":\"2015-09-30\",\"ApplyTaxAfterDiscount\":false,\"DocNumber\":\"1069\",\"sparse\":false,\"ProjectRef\":{\"value\":\"39298045\"},\"Deposit\":0,\"Balance\":100.0,\"CustomerRef\":{\"name\":\"Amy's Bird Sanctuary\",\"value\":\"1\"},\"TxnTaxDetail\":{\"TotalTax\":0},\"SyncToken\":\"1\",\"LinkedTxn\":[],\"ShipAddr\":{\"City\":\"Bayshore\",\"Line1\":\"4581 Finch St.\",\"PostalCode\":\"94326\",\"Lat\":\"INVALID\",\"Long\":\"INVALID\",\"CountrySubDivisionCode\":\"CA\",\"Id\":\"109\"},\"EmailStatus\":\"NotSet\",\"BillAddr\":{\"City\":\"Bayshore\",\"Line1\":\"4581 Finch St.\",\"PostalCode\":\"94326\",\"Lat\":\"INVALID\",\"Long\":\"INVALID\",\"CountrySubDivisionCode\":\"CA\",\"Id\":\"2\"},\"MetaData\":{\"CreateTime\":\"2015-07-24T10:33:39-07:00\",\"LastUpdatedTime\":\"2015-07-24T11:03:26-07:00\"},\"CustomField\":[{\"DefinitionId\":\"1\",\"Type\":\"StringType\",\"Name\":\"Crew #\"}],\"Id\":\"238\"},\"time\":\"2015-07-24T11:03:26.674-07:00\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Sparse update invoice",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "sparse",
+              "value": "true",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [
+            {
+              "uuid": "cb110001-0000-0000-0000-000000000004",
+              "latency": 0,
+              "name": "Notify invoice sparse updated",
+              "enabled": true,
+              "environmentCallbackUUID": "cb110001-0000-0000-0000-000000000004"
+            }
+          ]
+        },
+        {
+          "uuid": "e2f3a4b5-c6d7-4e8f-9a0b-1c2d3e4f5a6b",
+          "body": "{\"Invoice\":{\"TxnDate\":\"2015-07-24\",\"domain\":\"QBO\",\"PrintStatus\":\"NeedToPrint\",\"TotalAmt\":150.0,\"Line\":[{\"LineNum\":1,\"Amount\":150.0,\"SalesItemLineDetail\":{\"TaxCodeRef\":{\"value\":\"NON\"},\"ItemRef\":{\"name\":\"Services\",\"value\":\"1\"}},\"Id\":\"1\",\"DetailType\":\"SalesItemLineDetail\"},{\"DetailType\":\"SubTotalLineDetail\",\"Amount\":150.0,\"SubTotalLineDetail\":{}}],\"DueDate\":\"2015-08-23\",\"ApplyTaxAfterDiscount\":false,\"DocNumber\":\"1070\",\"sparse\":false,\"CustomerMemo\":{\"value\":\"Added customer memo.\"},\"ProjectRef\":{\"value\":\"39298045\"},\"Deposit\":0,\"Balance\":150.0,\"CustomerRef\":{\"name\":\"Amy's Bird Sanctuary\",\"value\":\"1\"},\"TxnTaxDetail\":{\"TotalTax\":0},\"SyncToken\":\"1\",\"LinkedTxn\":[],\"ShipAddr\":{\"CountrySubDivisionCode\":\"CA\",\"City\":\"Bayshore\",\"PostalCode\":\"94326\",\"Id\":\"118\",\"Line1\":\"4581 Finch St.\"},\"EmailStatus\":\"NotSet\",\"BillAddr\":{\"CountrySubDivisionCode\":\"CA\",\"City\":\"Bayshore\",\"PostalCode\":\"94326\",\"Id\":\"117\",\"Line1\":\"4581 Finch St.\"},\"MetaData\":{\"CreateTime\":\"2015-07-24T10:35:08-07:00\",\"LastUpdatedTime\":\"2015-07-24T10:53:39-07:00\"},\"CustomField\":[{\"DefinitionId\":\"1\",\"Type\":\"StringType\",\"Name\":\"Crew #\"}],\"Id\":\"239\"},\"time\":\"2015-07-24T10:53:39.287-07:00\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Full update invoice",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "Id",
+              "value": ".*",
+              "operator": "regex",
+              "invert": false
+            },
+            {
+              "target": "body",
+              "modifier": "sparse",
+              "value": "true",
+              "operator": "equals",
+              "invert": true
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [
+            {
+              "uuid": "cb110001-0000-0000-0000-000000000005",
+              "latency": 0,
+              "name": "Notify invoice full updated",
+              "enabled": true,
+              "environmentCallbackUUID": "cb110001-0000-0000-0000-000000000005"
+            }
+          ]
+        }
+      ],
+      "responseMode": "SEQUENTIAL",
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "1edadef7-ae23-4570-8088-360c084f3b73",
+      "type": "http",
+      "documentation": "Read a single invoice by ID",
+      "method": "get",
+      "endpoint": "v3/company/:companyId/invoice/:invoiceId",
+      "responses": [
+        {
+          "uuid": "f6d216f7-39de-4f98-9827-c628f8f8759f",
+          "body": "{\n  \"Invoice\": {\n    \"TxnDate\": \"2014-09-19\",\n    \"domain\": \"QBO\",\n    \"PrintStatus\": \"NeedToPrint\",\n    \"SalesTermRef\": {\n      \"value\": \"3\"\n    },\n    \"TotalAmt\": 362.07,\n    \"Line\": [\n      {\n        \"Description\": \"Rock Fountain\",\n        \"DetailType\": \"SalesItemLineDetail\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"TAX\"\n          },\n          \"Qty\": 1,\n          \"UnitPrice\": 275,\n          \"ItemRef\": {\n            \"name\": \"Rock Fountain\",\n            \"value\": \"5\"\n          }\n        },\n        \"LineNum\": 1,\n        \"Amount\": 275.0,\n        \"Id\": \"1\"\n      },\n      {\n        \"Description\": \"Fountain Pump\",\n        \"DetailType\": \"SalesItemLineDetail\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"TAX\"\n          },\n          \"Qty\": 1,\n          \"UnitPrice\": 12.75,\n          \"ItemRef\": {\n            \"name\": \"Pump\",\n            \"value\": \"11\"\n          }\n        },\n        \"LineNum\": 2,\n        \"Amount\": 12.75,\n        \"Id\": \"2\"\n      },\n      {\n        \"Description\": \"Concrete for fountain installation\",\n        \"DetailType\": \"SalesItemLineDetail\",\n        \"SalesItemLineDetail\": {\n          \"TaxCodeRef\": {\n            \"value\": \"TAX\"\n          },\n          \"Qty\": 5,\n          \"UnitPrice\": 9.5,\n          \"ItemRef\": {\n            \"name\": \"Concrete\",\n            \"value\": \"3\"\n          }\n        },\n        \"LineNum\": 3,\n        \"Amount\": 47.5,\n        \"Id\": \"3\"\n      },\n      {\n        \"DetailType\": \"SubTotalLineDetail\",\n        \"Amount\": 335.25,\n        \"SubTotalLineDetail\": {}\n      }\n    ],\n    \"DueDate\": \"2014-10-19\",\n    \"ApplyTaxAfterDiscount\": false,\n    \"DocNumber\": \"1037\",\n    \"sparse\": false,\n    \"CustomerMemo\": {\n      \"value\": \"Thank you for your business and have a great day!\"\n    },\n    \"ProjectRef\": {\n      \"value\": \"39298045\"\n    },\n    \"Deposit\": 0,\n    \"Balance\": 362.07,\n    \"CustomerRef\": {\n      \"name\": \"Sonnenschein Family Store\",\n      \"value\": \"24\"\n    },\n    \"TxnTaxDetail\": {\n      \"TxnTaxCodeRef\": {\n        \"value\": \"2\"\n      },\n      \"TotalTax\": 26.82,\n      \"TaxLine\": [\n        {\n          \"DetailType\": \"TaxLineDetail\",\n          \"Amount\": 26.82,\n          \"TaxLineDetail\": {\n            \"NetAmountTaxable\": 335.25,\n            \"TaxPercent\": 8,\n            \"TaxRateRef\": {\n              \"value\": \"3\"\n            },\n            \"PercentBased\": true\n          }\n        }\n      ]\n    },\n    \"SyncToken\": \"0\",\n    \"LinkedTxn\": [\n      {\n        \"TxnId\": \"100\",\n        \"TxnType\": \"Estimate\"\n      }\n    ],\n    \"BillEmail\": {\n      \"Address\": \"Familiystore@intuit.com\"\n    },\n    \"ShipAddr\": {\n      \"City\": \"Middlefield\",\n      \"Line1\": \"5647 Cypress Hill Ave.\",\n      \"PostalCode\": \"94303\",\n      \"Lat\": \"37.4238562\",\n      \"Long\": \"-122.1141681\",\n      \"CountrySubDivisionCode\": \"CA\",\n      \"Id\": \"25\"\n    },\n    \"EmailStatus\": \"NotSet\",\n    \"BillAddr\": {\n      \"Line4\": \"Middlefield, CA  94303\",\n      \"Line3\": \"5647 Cypress Hill Ave.\",\n      \"Line2\": \"Sonnenschein Family Store\",\n      \"Line1\": \"Russ Sonnenschein\",\n      \"Long\": \"-122.1141681\",\n      \"Lat\": \"37.4238562\",\n      \"Id\": \"95\"\n    },\n    \"MetaData\": {\n      \"CreateTime\": \"2014-09-19T13:16:17-07:00\",\n      \"LastUpdatedTime\": \"2014-09-19T13:16:17-07:00\"\n    },\n    \"CustomField\": [\n      {\n        \"DefinitionId\": \"1\",\n        \"StringValue\": \"102\",\n        \"Type\": \"StringType\",\n        \"Name\": \"Crew #\"\n      }\n    ],\n    \"Id\": \"130\"\n  },\n  \"time\": \"2015-07-24T10:48:27.082-07:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Invoice found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "a3f1e2d4-7b8c-4e9f-b012-3c4d5e6f7a8b",
+          "body": "{\n  \"Fault\": {\n    \"Error\": [\n      {\n        \"Message\": \"Object Not Found\",\n        \"Detail\": \"Object Not Found : Something you're trying to use has been made inactive. Check the fields with accounts, customers, items, vendors or employees.\",\n        \"code\": \"610\",\n        \"element\": \"\"\n      }\n    ],\n    \"type\": \"SERVICE_ERROR\"\n  },\n  \"time\": \"2015-07-24T10:48:27.082-07:00\"\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Invoice not found (id=999)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "invoiceId",
+              "value": "999",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "530572a2-e8b3-4914-b25f-d0571960118e",
+      "type": "http",
+      "documentation": "Query invoices via SQL-like select statement",
+      "method": "get",
+      "endpoint": "v3/company/:companyId/query",
+      "responses": [
+        {
+          "uuid": "e0effece-8cc4-4b62-a324-9740483d5dea",
+          "body": "{\n  \"QueryResponse\": {\n    \"startPosition\": 1,\n    \"totalCount\": 1,\n    \"maxResults\": 1,\n    \"Invoice\": [\n      {\n        \"TxnDate\": \"2015-07-24\",\n        \"domain\": \"QBO\",\n        \"PrintStatus\": \"NeedToPrint\",\n        \"TotalAmt\": 150.0,\n        \"Line\": [\n          {\n            \"LineNum\": 1,\n            \"Amount\": 150.0,\n            \"SalesItemLineDetail\": {\n              \"TaxCodeRef\": {\n                \"value\": \"NON\"\n              },\n              \"ItemRef\": {\n                \"name\": \"Services\",\n                \"value\": \"1\"\n              }\n            },\n            \"Id\": \"1\",\n            \"DetailType\": \"SalesItemLineDetail\"\n          },\n          {\n            \"DetailType\": \"SubTotalLineDetail\",\n            \"Amount\": 150.0,\n            \"SubTotalLineDetail\": {}\n          }\n        ],\n        \"DueDate\": \"2015-08-23\",\n        \"ApplyTaxAfterDiscount\": false,\n        \"DocNumber\": \"1070\",\n        \"sparse\": false,\n        \"ProjectRef\": {\n          \"value\": \"39298034\"\n        },\n        \"Deposit\": 0,\n        \"Balance\": 150.0,\n        \"CustomerRef\": {\n          \"name\": \"Amy's Bird Sanctuary\",\n          \"value\": \"1\"\n        },\n        \"TxnTaxDetail\": {\n          \"TotalTax\": 0\n        },\n        \"SyncToken\": \"0\",\n        \"LinkedTxn\": [],\n        \"ShipAddr\": {\n          \"City\": \"Bayshore\",\n          \"Line1\": \"4581 Finch St.\",\n          \"PostalCode\": \"94326\",\n          \"Lat\": \"INVALID\",\n          \"Long\": \"INVALID\",\n          \"CountrySubDivisionCode\": \"CA\",\n          \"Id\": \"109\"\n        },\n        \"EmailStatus\": \"NotSet\",\n        \"BillAddr\": {\n          \"City\": \"Bayshore\",\n          \"Line1\": \"4581 Finch St.\",\n          \"PostalCode\": \"94326\",\n          \"Lat\": \"INVALID\",\n          \"Long\": \"INVALID\",\n          \"CountrySubDivisionCode\": \"CA\",\n          \"Id\": \"2\"\n        },\n        \"MetaData\": {\n          \"CreateTime\": \"2015-07-24T10:35:08-07:00\",\n          \"LastUpdatedTime\": \"2015-07-24T10:35:08-07:00\"\n        },\n        \"CustomField\": [\n          {\n            \"DefinitionId\": \"1\",\n            \"Type\": \"StringType\",\n            \"Name\": \"Crew #\"\n          }\n        ],\n        \"Id\": \"239\"\n      }\n    ]\n  },\n  \"time\": \"2015-07-24T10:38:50.01-07:00\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Query results",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "ed795289-fc10-4b61-b394-8db3a986421a"
+    },
+    {
+      "type": "route",
+      "uuid": "1edadef7-ae23-4570-8088-360c084f3b73"
+    },
+    {
+      "type": "route",
+      "uuid": "530572a2-e8b3-4914-b25f-d0571960118e"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "folders": [],
+  "callbacks": [
+    {
+      "uuid": "cb110001-0000-0000-0000-000000000001",
+      "name": "QB Invoice Created Webhook",
+      "documentation": "Fires to our listener when a QBO invoice is created",
+      "method": "post",
+      "uri": "http://localhost:8000/webhooks/quickbooks",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"eventNotifications\":[{\"realmId\":\"123456789\",\"dataChangeEvent\":{\"entities\":[{\"id\":\"238\",\"operation\":\"Create\",\"name\":\"Invoice\",\"lastUpdated\":\"2015-07-24T10:33:39.657Z\"}]}}]}",
+      "bodyType": "INLINE",
+      "filePath": "",
+      "sendFileAsBody": false,
+      "databucketID": ""
+    },
+    {
+      "uuid": "cb110001-0000-0000-0000-000000000002",
+      "name": "QB Invoice Deleted Webhook",
+      "documentation": "Fires to our listener when a QBO invoice is deleted",
+      "method": "post",
+      "uri": "http://localhost:8000/webhooks/quickbooks",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"eventNotifications\":[{\"realmId\":\"123456789\",\"dataChangeEvent\":{\"entities\":[{\"id\":\"33\",\"operation\":\"Delete\",\"name\":\"Invoice\",\"lastUpdated\":\"2013-03-15T00:18:15.322Z\"}]}}]}",
+      "bodyType": "INLINE",
+      "filePath": "",
+      "sendFileAsBody": false,
+      "databucketID": ""
+    },
+    {
+      "uuid": "cb110001-0000-0000-0000-000000000003",
+      "name": "QB Invoice Voided Webhook",
+      "documentation": "Fires to our listener when a QBO invoice is voided",
+      "method": "post",
+      "uri": "http://localhost:8000/webhooks/quickbooks",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"eventNotifications\":[{\"realmId\":\"123456789\",\"dataChangeEvent\":{\"entities\":[{\"id\":\"129\",\"operation\":\"Void\",\"name\":\"Invoice\",\"lastUpdated\":\"2016-03-16T12:27:10.711Z\"}]}}]}",
+      "bodyType": "INLINE",
+      "filePath": "",
+      "sendFileAsBody": false,
+      "databucketID": ""
+    },
+    {
+      "uuid": "cb110001-0000-0000-0000-000000000004",
+      "name": "QB Invoice Sparse Updated Webhook",
+      "documentation": "Fires to our listener when a QBO invoice is sparse-updated",
+      "method": "post",
+      "uri": "http://localhost:8000/webhooks/quickbooks",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"eventNotifications\":[{\"realmId\":\"123456789\",\"dataChangeEvent\":{\"entities\":[{\"id\":\"238\",\"operation\":\"Update\",\"name\":\"Invoice\",\"lastUpdated\":\"2015-07-24T11:03:26.674Z\"}]}}]}",
+      "bodyType": "INLINE",
+      "filePath": "",
+      "sendFileAsBody": false,
+      "databucketID": ""
+    },
+    {
+      "uuid": "cb110001-0000-0000-0000-000000000005",
+      "name": "QB Invoice Full Updated Webhook",
+      "documentation": "Fires to our listener when a QBO invoice is fully updated",
+      "method": "post",
+      "uri": "http://localhost:8000/webhooks/quickbooks",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"eventNotifications\":[{\"realmId\":\"123456789\",\"dataChangeEvent\":{\"entities\":[{\"id\":\"239\",\"operation\":\"Update\",\"name\":\"Invoice\",\"lastUpdated\":\"2015-07-24T10:53:39.287Z\"}]}}]}",
+      "bodyType": "INLINE",
+      "filePath": "",
+      "sendFileAsBody": false,
+      "databucketID": ""
+    }
+  ]
+}

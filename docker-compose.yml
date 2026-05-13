@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test123
+      - POSTGRES_DB=ideaas
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - "5432:5432"
+    # volumes:
+    #   - "${PWD}/db-data:/var/lib/postgresql/data"

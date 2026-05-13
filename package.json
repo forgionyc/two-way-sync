@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "mock": "pkill -f \"mockoon-cli\" 2>/dev/null; mockoon-cli start --data ./quickbooks-mock.json --port 4000",
+    "mock:kill": "pkill -f \"mockoon-cli\" 2>/dev/null",
+    "mock:status": "pgrep -f 'mockoon-cli' > /dev/null && (echo 'Mockoon is running' && ps wwaux | grep '[m]ockoon-cli' | grep -v 'mock:status' | while read -r p; do PID=$(echo $p | awk '{print $2}'); PORT=$(echo $p | grep -oE '(--port|-p) [0-9]+' | awk '{print $2}'); echo \"   PID: $PID | URL: http://localhost:${PORT:-3000}\"; done | sort -u -k2,2) || echo 'Mockoon server is not running'"
+  },
+  "devDependencies": {
+    "@mockoon/cli": "^9.6.1"
+  }
+}
