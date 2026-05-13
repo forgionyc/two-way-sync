@@ -2,6 +2,7 @@ import datetime
 
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     CheckConstraint,
     Column,
     Date,
@@ -43,6 +44,7 @@ class Company(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     external_id = Column(String, nullable=True)
+    company_name = Column(String, nullable=False)
     user_id = Column(BigInteger, ForeignKey("users.id"), nullable=False)
     provider_id = Column(BigInteger, ForeignKey("providers.id"), nullable=True)
     access_token = Column(String, nullable=True)
@@ -63,6 +65,7 @@ class Customer(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     company_id = Column(BigInteger, ForeignKey("companies.id"), nullable=False)
+    external_id = Column(String, nullable=True)
     name = Column(String, nullable=False)
     email = Column(String, nullable=True)
     phone = Column(String, nullable=True)
@@ -105,9 +108,11 @@ class Invoice(Base):
     company_id = Column(BigInteger, ForeignKey("companies.id"), nullable=False)
     customer_id = Column(BigInteger, ForeignKey("customers.id"), nullable=False)
     status = Column(String, nullable=False)
+    is_deleted = Column(Boolean, server_default="false", nullable=False)
     total_amount = Column(Numeric(10, 2), nullable=False)
     issue_date = Column(Date, nullable=False)
     due_date = Column(Date, nullable=True)
+    origin = Column(String, nullable=False, server_default="local")
     last_sync_at = Column(DateTime, nullable=True)
     sync_token = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
@@ -120,6 +125,7 @@ class Invoice(Base):
     customer = relationship("Customer", back_populates="invoices")
     items = relationship("InvoiceItem", back_populates="invoice")
     history = relationship("InvoiceHistory", back_populates="invoice")
+    sync_jobs = relationship("SyncJob", back_populates="invoice")
 
 
 @event.listens_for(Invoice, "after_insert")
@@ -167,6 +173,7 @@ class InvoiceHistory(Base):
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     invoice_id = Column(BigInteger, ForeignKey("invoices.id"), nullable=False)
+    event_type = Column(String, nullable=True)
     status_state = Column(String, nullable=True)
     total_amount = Column(Numeric(10, 2), nullable=True)
     external_invoice_id = Column(String, nullable=True)
@@ -174,3 +181,25 @@ class InvoiceHistory(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
 
     invoice = relationship("Invoice", back_populates="history")
+
+
+class SyncJob(Base):
+    __tablename__ = "sync_jobs"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    invoice_id = Column(BigInteger, ForeignKey("invoices.id"), nullable=False)
+    company_id = Column(BigInteger, ForeignKey("companies.id"), nullable=False)
+    operation = Column(String, nullable=False)
+    status = Column(String, nullable=False, default="pending")
+    attempts = Column(Integer, default=0, nullable=False)
+    max_attempts = Column(Integer, default=3, nullable=False)
+    error_message = Column(String, nullable=True)
+    scheduled_at = Column(DateTime, nullable=False)
+    executed_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(
+        DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
+    invoice = relationship("Invoice", back_populates="sync_jobs")
+    company = relationship("Company")

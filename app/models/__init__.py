@@ -7,6 +7,7 @@ from app.models.models import (
     InvoiceItem,
     ApiLog,
     InvoiceHistory,
+    SyncJob,
 )
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "InvoiceItem",
     "ApiLog",
     "InvoiceHistory",
+    "SyncJob",
 ]

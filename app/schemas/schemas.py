@@ -24,18 +24,12 @@ class InvoiceItemResponse(InvoiceItemBase):
     invoice_id: int
 
 
-class InvoiceBase(BaseModel):
-    external_invoice_id: Optional[str] = None
-    provider_id: Optional[int] = None
+class InvoiceCreate(BaseModel):
     company_id: int
     customer_id: int
-    status: str
     total_amount: Decimal
     issue_date: date
     due_date: Optional[date] = None
-
-
-class InvoiceCreate(InvoiceBase):
     items: list[InvoiceItemCreate]
 
 
@@ -44,15 +38,24 @@ class InvoiceUpdate(BaseModel):
     total_amount: Optional[Decimal] = None
     issue_date: Optional[date] = None
     due_date: Optional[date] = None
-    external_invoice_id: Optional[str] = None
-    provider_id: Optional[int] = None
+    items: Optional[list[InvoiceItemCreate]] = None
 
 
-class InvoiceResponse(InvoiceBase):
+class InvoiceResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     invoice_number: Optional[str] = None
+    external_invoice_id: Optional[str] = None
+    provider_id: Optional[int] = None
+    company_id: int
+    customer_id: int
+    status: str
+    origin: str
+    is_deleted: bool
+    total_amount: Decimal
+    issue_date: date
+    due_date: Optional[date] = None
     last_sync_at: Optional[datetime] = None
     sync_token: Optional[str] = None
     created_at: datetime
