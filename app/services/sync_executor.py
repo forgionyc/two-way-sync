@@ -62,7 +62,8 @@ def _execute_create(client: QuickBooksClient, invoice: Invoice, db: Session) -> 
 
     invoice.external_invoice_id = qbo_invoice["Id"]
     invoice.sync_token = qbo_invoice["SyncToken"]
-    invoice.status = "Synced"
+    invoice.status = "Open"
+    invoice.sync_status = "complete"
     invoice.last_sync_at = datetime.utcnow()
     db.flush()
 
@@ -100,6 +101,7 @@ def _execute_update(client: QuickBooksClient, invoice: Invoice, db: Session) -> 
                 invoice.id,
             )
             read_result = client.read_invoice(invoice.external_invoice_id)
+            append_api_log(db, "outbound", "GET", client._invoice_base_url + f"/{invoice.external_invoice_id}", None, 200, read_result.data)
             invoice.sync_token = read_result.data["Invoice"]["SyncToken"]
             db.flush()
             result = client.update_invoice(invoice, changed_fields)
@@ -108,6 +110,7 @@ def _execute_update(client: QuickBooksClient, invoice: Invoice, db: Session) -> 
 
     qbo_invoice = result.data["Invoice"]
     invoice.sync_token = qbo_invoice["SyncToken"]
+    invoice.sync_status = "complete"
     invoice.last_sync_at = datetime.utcnow()
     db.flush()
 
@@ -130,6 +133,8 @@ def _execute_update(client: QuickBooksClient, invoice: Invoice, db: Session) -> 
 
 def _execute_delete(client: QuickBooksClient, invoice: Invoice, db: Session) -> None:
     result = client.delete_invoice(invoice)
+    invoice.sync_status = "complete"
+    db.flush()
     append_api_log(
         db,
         "outbound",
@@ -145,6 +150,8 @@ def _execute_delete(client: QuickBooksClient, invoice: Invoice, db: Session) -> 
 
 def _execute_void(client: QuickBooksClient, invoice: Invoice, db: Session) -> None:
     result = client.void_invoice(invoice)
+    invoice.sync_status = "complete"
+    db.flush()
     append_api_log(
         db,
         "outbound",

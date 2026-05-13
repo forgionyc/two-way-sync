@@ -65,6 +65,7 @@ def update_invoice(invoice_id: int, data, db: Session) -> Invoice:
         for item_data in items_data:
             db.add(InvoiceItem(invoice_id=invoice_id, **item_data))
 
+    invoice.sync_status = "pending"
     append_invoice_history(db, invoice, "local_update")
     _enqueue_job(invoice, "update", db)
     db.commit()
@@ -76,6 +77,7 @@ def delete_invoice(invoice_id: int, db: Session) -> None:
     invoice = get_invoice(invoice_id, db)
     invoice.is_deleted = True
     invoice.status = "Deleted"
+    invoice.sync_status = "pending"
     append_invoice_history(db, invoice, "local_delete")
     _enqueue_job(invoice, "delete", db)
     db.commit()
@@ -88,6 +90,7 @@ def void_invoice(invoice_id: int, db: Session) -> Invoice:
     if invoice.status == "Deleted":
         raise HTTPException(status_code=409, detail="Cannot void a deleted invoice")
     invoice.status = "Voided"
+    invoice.sync_status = "pending"
     append_invoice_history(db, invoice, "local_void")
     _enqueue_job(invoice, "void", db)
     db.commit()
