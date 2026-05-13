@@ -52,6 +52,7 @@ class InvoiceResponse(BaseModel):
     customer_id: int
     status: str
     origin: str
+    sync_status: str
     is_deleted: bool
     total_amount: Decimal
     issue_date: date

@@ -113,6 +113,7 @@ class Invoice(Base):
     issue_date = Column(Date, nullable=False)
     due_date = Column(Date, nullable=True)
     origin = Column(String, nullable=False, server_default="local")
+    sync_status = Column(String, nullable=False, server_default="pending")
     last_sync_at = Column(DateTime, nullable=True)
     sync_token = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
@@ -202,4 +203,26 @@ class SyncJob(Base):
     )
 
     invoice = relationship("Invoice", back_populates="sync_jobs")
+    company = relationship("Company")
+
+
+class WebhookEvent(Base):
+    __tablename__ = "webhook_events"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    cloudevent_id = Column(String, nullable=True, unique=True)
+    company_id = Column(BigInteger, ForeignKey("companies.id"), nullable=False)
+    external_invoice_id = Column(String, nullable=False)
+    operation = Column(String, nullable=False)
+    status = Column(String, nullable=False, server_default="pending")
+    attempts = Column(Integer, default=0, nullable=False)
+    max_attempts = Column(Integer, default=3, nullable=False)
+    error_message = Column(String, nullable=True)
+    scheduled_at = Column(DateTime, server_default=func.now(), nullable=False)
+    executed_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(
+        DateTime, server_default=func.now(), onupdate=func.now(), nullable=False
+    )
+
     company = relationship("Company")

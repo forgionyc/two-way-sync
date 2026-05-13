@@ -8,6 +8,7 @@ from app.models.models import (
     ApiLog,
     InvoiceHistory,
     SyncJob,
+    WebhookEvent,
 )
 
 __all__ = [
@@ -20,4 +21,5 @@ __all__ = [
     "ApiLog",
     "InvoiceHistory",
     "SyncJob",
+    "WebhookEvent",
 ]
