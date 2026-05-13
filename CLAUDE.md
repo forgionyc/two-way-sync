@@ -19,6 +19,7 @@ This is a Python project managed with `uv`. Use `uv run` for execution and `uv a
 
 
 ## Project Structure
+```
 ├── alembic/                # The migrations directory
 │   ├── versions/           # Individual migration scripts (.py files)
 │   ├── env.py              # Configuration for migrations (links to your models)
@@ -48,10 +49,11 @@ This is a Python project managed with `uv`. Use `uv run` for execution and `uv a
 ├── quickbooks_api.md       # Integration documentation
 ├── README.md
 └── uv.lock                 # Deterministic lockfile
+```
 
 ## Commands
 - `docker compose up -d` Start the database
-- `uv run python seeds.py` Seed the database with initial data
+- `uv run python -m scripts.seed` Seed the database with initial data
 - `npm run mock` Start the mock server
 - `uv run fastapi dev`  Run the application with auto-reload dev mode
 - `uv add <package-name>` Add a dependency if needed - use the `--dev` flag for dev dependencies
