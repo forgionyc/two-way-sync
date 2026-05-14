@@ -15,7 +15,9 @@ def make_execute_result(*, scalar=None, scalar_one=None, scalars_all=None):
     r = MagicMock()
     r.scalar_one_or_none.return_value = scalar
     r.scalar_one.return_value = scalar_one
-    r.scalars.return_value.all.return_value = scalars_all if scalars_all is not None else []
+    r.scalars.return_value.all.return_value = (
+        scalars_all if scalars_all is not None else []
+    )
     return r
 
 

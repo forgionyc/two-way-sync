@@ -1,11 +1,11 @@
 import logging
-from datetime import datetime
 
 from fastapi import HTTPException
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.core.audit import append_invoice_history
+from app.core.time import utcnow
 from app.models.models import Company, Customer, Invoice, InvoiceItem, SyncJob
 
 logger = logging.getLogger(__name__)
@@ -104,7 +104,7 @@ def _enqueue_job(invoice: Invoice, operation: str, db: Session) -> SyncJob:
         company_id=invoice.company_id,
         operation=operation,
         status="pending",
-        scheduled_at=datetime.utcnow(),
+        scheduled_at=utcnow(),
     )
     db.add(job)
     return job

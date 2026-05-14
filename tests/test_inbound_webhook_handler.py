@@ -22,10 +22,8 @@ Covers every inbound (QBO → ideeas) scenario:
 """
 
 from contextlib import contextmanager
-from decimal import Decimal
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 
 from app.integrations.quickbooks_client import QBOResult
 from app.models.models import ApiLog, Invoice, InvoiceHistory, InvoiceItem
@@ -39,7 +37,9 @@ from tests.conftest import make_execute_result
 
 
 def _added_of(db, model_class) -> list:
-    return [c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], model_class)]
+    return [
+        c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], model_class)
+    ]
 
 
 @contextmanager
@@ -57,10 +57,12 @@ def _patch_qbo_client(qbo_data: dict, base_url: str = "http://mock/invoice"):
 
 
 class TestHandleCreated:
-    def test_creates_invoice_when_not_found_locally(self, db, company, customer, qbo_invoice_data):
+    def test_creates_invoice_when_not_found_locally(
+        self, db, company, customer, qbo_invoice_data
+    ):
         """New invoice arrives from QBO → created in the local database."""
         db.execute.side_effect = [
-            make_execute_result(scalar=None),      # _lookup_invoice → not found
+            make_execute_result(scalar=None),  # _lookup_invoice → not found
             make_execute_result(scalar=customer),  # customer lookup
         ]
 
@@ -110,7 +112,9 @@ class TestHandleCreated:
         assert len(history) == 1
         assert history[0].event_type == "inbound_create"
 
-    def test_skips_entirely_when_invoice_already_exists(self, db, company, synced_invoice):
+    def test_skips_entirely_when_invoice_already_exists(
+        self, db, company, synced_invoice
+    ):
         """
         QBO fires a 'created' event for an invoice that ideeas already synced outbound.
         The handler must skip with no db writes — the invoice already exists locally.
@@ -123,7 +127,9 @@ class TestHandleCreated:
 
         db.add.assert_not_called()
 
-    def test_skips_invoice_creation_when_customer_not_found(self, db, company, qbo_invoice_data):
+    def test_skips_invoice_creation_when_customer_not_found(
+        self, db, company, qbo_invoice_data
+    ):
         """Customer not in ideeas → api_log written, but no Invoice created."""
         db.execute.side_effect = [
             make_execute_result(scalar=None),  # no invoice
@@ -143,7 +149,9 @@ class TestHandleCreated:
 
 
 class TestHandleUpdated:
-    def test_updates_fields_when_qbo_token_is_newer(self, db, company, synced_invoice, qbo_invoice_data):
+    def test_updates_fields_when_qbo_token_is_newer(
+        self, db, company, synced_invoice, qbo_invoice_data
+    ):
         """
         QBO sync_token=6, local sync_token=5 → invoice is updated (fields + sync_token).
         This is the normal QBO→ideeas update flow; also covers the 'QBO fires back after
@@ -157,7 +165,9 @@ class TestHandleUpdated:
         assert synced_invoice.sync_token == "6"
         assert synced_invoice.sync_status == "complete"
 
-    def test_saves_api_log_and_history_on_update(self, db, company, synced_invoice, qbo_invoice_data):
+    def test_saves_api_log_and_history_on_update(
+        self, db, company, synced_invoice, qbo_invoice_data
+    ):
         db.execute.return_value = make_execute_result(scalar=synced_invoice)
 
         with _patch_qbo_client(qbo_invoice_data):
@@ -168,7 +178,9 @@ class TestHandleUpdated:
         assert len(history) == 1
         assert history[0].event_type == "inbound_update"
 
-    def test_skips_update_when_qbo_token_is_same_or_older(self, db, company, synced_invoice, qbo_invoice_data):
+    def test_skips_update_when_qbo_token_is_same_or_older(
+        self, db, company, synced_invoice, qbo_invoice_data
+    ):
         """
         QBO fires back with sync_token=5 (same as local) after our own outbound update.
         The handler must skip the update — this is a stale/replayed event.
@@ -281,3 +293,49 @@ class TestHandleVoided:
         handle_invoice_event(company, "QBO_UNKNOWN", "voided", "EVT_007", db)
 
         db.add.assert_not_called()
+
+    def test_skips_when_invoice_already_deleted(self, db, company, synced_invoice):
+        """
+        Mirrors the local rule in invoice_service.void_invoice: a deleted invoice
+        cannot be voided. Inbound void of a deleted invoice is a no-op.
+        """
+        synced_invoice.is_deleted = True
+        synced_invoice.status = "Deleted"
+        db.execute.return_value = make_execute_result(scalar=synced_invoice)
+
+        handle_invoice_event(company, "QBO_001", "voided", "EVT_008", db)
+
+        assert synced_invoice.status == "Deleted"
+        assert len(_added_of(db, InvoiceHistory)) == 0
+
+
+# ---------------------------------------------------------------------------
+# defensive parsing for non-numeric SyncTokens
+# ---------------------------------------------------------------------------
+
+
+class TestDefensiveSyncToken:
+    """
+    The QBO API documents SyncToken as a numeric string. The handler must not
+    crash if QBO ever returns a non-numeric value: it should log a warning and
+    skip the update rather than raising ValueError out of the worker.
+    """
+
+    def test_non_numeric_qbo_token_is_skipped_safely(self, db, company, synced_invoice):
+        bad_qbo = {
+            "Invoice": {
+                "Id": "QBO_001",
+                "SyncToken": "not-a-number",
+                "TotalAmt": "750.00",
+                "TxnDate": "2026-01-15",
+                "CustomerRef": {"value": "CUST_001"},
+                "Line": [],
+            }
+        }
+        db.execute.return_value = make_execute_result(scalar=synced_invoice)
+
+        with _patch_qbo_client(bad_qbo):
+            handle_invoice_event(company, "QBO_001", "updated", "EVT_BAD", db)
+
+        # No history entry written; no crash propagated.
+        assert len(_added_of(db, InvoiceHistory)) == 0

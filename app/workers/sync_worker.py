@@ -1,12 +1,14 @@
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from sqlalchemy import select
 
 from app.core.config import WORKER_POLL_INTERVAL
+from app.core.time import utcnow
 from app.db.session import SessionLocal
 from app.models.models import Company, Invoice, SyncJob, WebhookEvent
+from app.services.exceptions import ConflictError
 from app.services.sync_executor import execute_job
 from app.services.webhook_handler import handle_invoice_event
 
@@ -16,6 +18,7 @@ _MAX_BATCH = 10
 
 
 def _backoff(attempts: int) -> int:
+    """Exponential backoff: 30s, 60s, 120s, ..., capped at 300s."""
     return min(300, 30 * (2 ** (attempts - 1)))
 
 
@@ -37,7 +40,7 @@ def _run_batch() -> None:
             select(SyncJob)
             .where(
                 SyncJob.status == "pending",
-                SyncJob.scheduled_at <= datetime.utcnow(),
+                SyncJob.scheduled_at <= utcnow(),
             )
             .limit(_MAX_BATCH)
             .with_for_update(skip_locked=True)
@@ -57,9 +60,20 @@ def _run_batch() -> None:
             try:
                 execute_job(job, db)
                 job.status = "completed"
-                job.executed_at = datetime.utcnow()
+                job.executed_at = utcnow()
                 db.commit()
                 logger.info("Job %d (%s) completed", job_id, job.operation)
+            except ConflictError as e:
+                # Conflict was already flagged on the invoice in the executor.
+                # Mark the job as failed without further retries: a human must
+                # resolve the conflict before any further sync is attempted.
+                db.rollback()
+                logger.error("Job %d aborted by conflict: %s", job_id, e, exc_info=True)
+                job = db.get(SyncJob, job_id)
+                job.attempts = job.max_attempts
+                job.status = "failed"
+                job.error_message = str(e)[:1000]
+                db.commit()
             except Exception as e:
                 db.rollback()
                 logger.error("Job %d failed: %s", job_id, e, exc_info=True)
@@ -78,7 +92,7 @@ def _run_batch() -> None:
                     )
                 else:
                     job.status = "pending"
-                    job.scheduled_at = datetime.utcnow() + timedelta(
+                    job.scheduled_at = utcnow() + timedelta(
                         seconds=_backoff(job.attempts)
                     )
                 db.commit()
@@ -93,7 +107,7 @@ def _run_webhook_batch() -> None:
             select(WebhookEvent)
             .where(
                 WebhookEvent.status == "pending",
-                WebhookEvent.scheduled_at <= datetime.utcnow(),
+                WebhookEvent.scheduled_at <= utcnow(),
             )
             .limit(_MAX_BATCH)
             .with_for_update(skip_locked=True)
@@ -120,7 +134,7 @@ def _run_webhook_batch() -> None:
                     db,
                 )
                 event.status = "completed"
-                event.executed_at = datetime.utcnow()
+                event.executed_at = utcnow()
                 db.commit()
                 logger.info("WebhookEvent %d (%s) completed", event_id, event.operation)
             except Exception as e:
@@ -138,7 +152,7 @@ def _run_webhook_batch() -> None:
                     )
                 else:
                     event.status = "pending"
-                    event.scheduled_at = datetime.utcnow() + timedelta(
+                    event.scheduled_at = utcnow() + timedelta(
                         seconds=_backoff(event.attempts)
                     )
                 db.commit()

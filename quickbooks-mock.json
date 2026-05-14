@@ -20,12 +20,25 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Delete",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [{"target": "query", "modifier": "operation", "value": "delete", "operator": "equals", "invert": false}],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "operation",
+              "value": "delete",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
           "rulesOperator": "OR",
           "disableTemplating": true,
           "fallbackTo404": false,
@@ -39,12 +52,25 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Void",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [{"target": "query", "modifier": "operation", "value": "void", "operator": "equals", "invert": false}],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "operation",
+              "value": "void",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
           "rulesOperator": "OR",
           "disableTemplating": true,
           "fallbackTo404": false,
@@ -58,12 +84,25 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Update",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [{"target": "body", "modifier": "sparse", "value": "true", "operator": "equals", "invert": false}],
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "sparse",
+              "value": "true",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
           "rulesOperator": "OR",
           "disableTemplating": true,
           "fallbackTo404": false,
@@ -77,12 +116,25 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Create INV-2026-000000001 → QBO 238",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [{"target": "body", "modifier": "DocNumber", "value": "INV-2026-000000001", "operator": "equals", "invert": false}],
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "DocNumber",
+              "value": "INV-2026-000000001",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
           "rulesOperator": "OR",
           "disableTemplating": true,
           "fallbackTo404": false,
@@ -96,12 +148,25 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Create INV-2026-000000002 → QBO 239",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [{"target": "body", "modifier": "DocNumber", "value": "INV-2026-000000002", "operator": "equals", "invert": false}],
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "DocNumber",
+              "value": "INV-2026-000000002",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
           "rulesOperator": "OR",
           "disableTemplating": true,
           "fallbackTo404": false,
@@ -115,12 +180,25 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Create INV-2026-000000003 → QBO 240",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [{"target": "body", "modifier": "DocNumber", "value": "INV-2026-000000003", "operator": "equals", "invert": false}],
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "DocNumber",
+              "value": "INV-2026-000000003",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
           "rulesOperator": "OR",
           "disableTemplating": true,
           "fallbackTo404": false,
@@ -134,12 +212,25 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Create INV-2026-000000004 → QBO 241",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [{"target": "body", "modifier": "DocNumber", "value": "INV-2026-000000004", "operator": "equals", "invert": false}],
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "DocNumber",
+              "value": "INV-2026-000000004",
+              "operator": "equals",
+              "invert": false
+            }
+          ],
           "rulesOperator": "OR",
           "disableTemplating": true,
           "fallbackTo404": false,
@@ -153,7 +244,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Create (default) → QBO 238",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -184,7 +280,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Invoice found — SyncToken 0 (inbound create)",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -203,7 +304,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Invoice found — SyncToken 1 (inbound update)",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -224,17 +330,54 @@
     {
       "uuid": "530572a2-e8b3-4914-b25f-d0571960118e",
       "type": "http",
-      "documentation": "Query invoices",
+      "documentation": "Query invoices. Supports reconciliation by DocNumber: a query containing INV-2026-RECONCILE-001 returns a pre-existing invoice (Id=999, SyncToken=0) so we can demonstrate outbound-create reconciliation on retry.",
       "method": "get",
       "endpoint": "v3/company/:companyId/query",
       "responses": [
+        {
+          "uuid": "11111111-2222-4333-8444-555555555555",
+          "body": "{\"QueryResponse\":{\"Invoice\":[{\"Id\":\"999\",\"SyncToken\":\"0\",\"DocNumber\":\"INV-2026-RECONCILE-001\",\"TxnDate\":\"2026-05-13\",\"TotalAmt\":500.0,\"CustomerRef\":{\"name\":\"Amy's Bird Sanctuary\",\"value\":\"1\"}}],\"totalCount\":1},\"time\":\"2026-05-13T00:00:00.000Z\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Reconciliation hit (DocNumber=INV-2026-RECONCILE-001)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "query",
+              "value": "INV-2026-RECONCILE-001",
+              "operator": "regex",
+              "invert": false
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
         {
           "uuid": "e0effece-8cc4-4b62-a324-9740483d5dea",
           "body": "{\"QueryResponse\":{\"Invoice\":[],\"totalCount\":0},\"time\":\"2026-05-13T00:00:00.000Z\"}",
           "latency": 0,
           "statusCode": 200,
-          "label": "Query results",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "label": "Empty query result (default)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -265,7 +408,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Simulate invoice created",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -276,7 +424,15 @@
           "fallbackTo404": false,
           "default": true,
           "crudKey": "id",
-          "callbacks": [{"uuid": "cc000001-0000-4000-c000-000000000001", "latency": 0, "name": "Fire invoice created webhook", "enabled": true, "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000001"}]
+          "callbacks": [
+            {
+              "uuid": "cc000001-0000-4000-c000-000000000001",
+              "latency": 0,
+              "name": "Fire invoice created webhook",
+              "enabled": true,
+              "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000001"
+            }
+          ]
         }
       ],
       "responseMode": null,
@@ -296,7 +452,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Simulate invoice updated",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -307,7 +468,15 @@
           "fallbackTo404": false,
           "default": true,
           "crudKey": "id",
-          "callbacks": [{"uuid": "cc000001-0000-4000-c000-000000000002", "latency": 0, "name": "Fire invoice updated webhook", "enabled": true, "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000002"}]
+          "callbacks": [
+            {
+              "uuid": "cc000001-0000-4000-c000-000000000002",
+              "latency": 0,
+              "name": "Fire invoice updated webhook",
+              "enabled": true,
+              "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000002"
+            }
+          ]
         }
       ],
       "responseMode": null,
@@ -327,7 +496,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Simulate invoice deleted",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -338,7 +512,15 @@
           "fallbackTo404": false,
           "default": true,
           "crudKey": "id",
-          "callbacks": [{"uuid": "cc000001-0000-4000-c000-000000000003", "latency": 0, "name": "Fire invoice deleted webhook", "enabled": true, "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000003"}]
+          "callbacks": [
+            {
+              "uuid": "cc000001-0000-4000-c000-000000000003",
+              "latency": 0,
+              "name": "Fire invoice deleted webhook",
+              "enabled": true,
+              "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000003"
+            }
+          ]
         }
       ],
       "responseMode": null,
@@ -358,7 +540,12 @@
           "latency": 0,
           "statusCode": 200,
           "label": "Simulate invoice voided",
-          "headers": [{"key": "Content-Type", "value": "application/json"}],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -369,7 +556,15 @@
           "fallbackTo404": false,
           "default": true,
           "crudKey": "id",
-          "callbacks": [{"uuid": "cc000001-0000-4000-c000-000000000004", "latency": 0, "name": "Fire invoice voided webhook", "enabled": true, "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000004"}]
+          "callbacks": [
+            {
+              "uuid": "cc000001-0000-4000-c000-000000000004",
+              "latency": 0,
+              "name": "Fire invoice voided webhook",
+              "enabled": true,
+              "environmentCallbackUUID": "cc000001-0000-4000-c000-000000000004"
+            }
+          ]
         }
       ],
       "responseMode": null,
@@ -378,13 +573,34 @@
     }
   ],
   "rootChildren": [
-    {"type": "route", "uuid": "ed795289-fc10-4b61-b394-8db3a986421a"},
-    {"type": "route", "uuid": "1edadef7-ae23-4570-8088-360c084f3b73"},
-    {"type": "route", "uuid": "530572a2-e8b3-4914-b25f-d0571960118e"},
-    {"type": "route", "uuid": "aa000001-0000-4000-a000-000000000001"},
-    {"type": "route", "uuid": "aa000001-0000-4000-a000-000000000002"},
-    {"type": "route", "uuid": "aa000001-0000-4000-a000-000000000003"},
-    {"type": "route", "uuid": "aa000001-0000-4000-a000-000000000004"}
+    {
+      "type": "route",
+      "uuid": "ed795289-fc10-4b61-b394-8db3a986421a"
+    },
+    {
+      "type": "route",
+      "uuid": "1edadef7-ae23-4570-8088-360c084f3b73"
+    },
+    {
+      "type": "route",
+      "uuid": "530572a2-e8b3-4914-b25f-d0571960118e"
+    },
+    {
+      "type": "route",
+      "uuid": "aa000001-0000-4000-a000-000000000001"
+    },
+    {
+      "type": "route",
+      "uuid": "aa000001-0000-4000-a000-000000000002"
+    },
+    {
+      "type": "route",
+      "uuid": "aa000001-0000-4000-a000-000000000003"
+    },
+    {
+      "type": "route",
+      "uuid": "aa000001-0000-4000-a000-000000000004"
+    }
   ],
   "proxyMode": false,
   "proxyHost": "",
@@ -399,9 +615,24 @@
     "passphrase": ""
   },
   "cors": true,
-  "headers": [{"key": "Content-Type", "value": "application/json"}],
-  "proxyReqHeaders": [{"key": "", "value": ""}],
-  "proxyResHeaders": [{"key": "", "value": ""}],
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
   "data": [],
   "folders": [],
   "callbacks": [
@@ -411,7 +642,12 @@
       "documentation": "Fires to /webhooks/quickbooks simulating QBO invoice 9001 created for company 111222333",
       "method": "post",
       "uri": "http://localhost:8000/webhooks/quickbooks",
-      "headers": [{"key": "Content-Type", "value": "application/json"}],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "body": "[{\"id\":\"sim-evt-created-001\",\"type\":\"qbo.invoice.created.v1\",\"intuitentityid\":\"9001\",\"intuitaccountid\":\"111222333\",\"data\":{}}]",
       "bodyType": "INLINE",
       "filePath": "",
@@ -424,7 +660,12 @@
       "documentation": "Fires to /webhooks/quickbooks simulating QBO invoice 9001 updated for company 111222333",
       "method": "post",
       "uri": "http://localhost:8000/webhooks/quickbooks",
-      "headers": [{"key": "Content-Type", "value": "application/json"}],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "body": "[{\"id\":\"sim-evt-updated-001\",\"type\":\"qbo.invoice.updated.v1\",\"intuitentityid\":\"9001\",\"intuitaccountid\":\"111222333\",\"data\":{}}]",
       "bodyType": "INLINE",
       "filePath": "",
@@ -437,7 +678,12 @@
       "documentation": "Fires to /webhooks/quickbooks simulating QBO invoice 9001 deleted for company 111222333",
       "method": "post",
       "uri": "http://localhost:8000/webhooks/quickbooks",
-      "headers": [{"key": "Content-Type", "value": "application/json"}],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "body": "[{\"id\":\"sim-evt-deleted-001\",\"type\":\"qbo.invoice.deleted.v1\",\"intuitentityid\":\"9001\",\"intuitaccountid\":\"111222333\",\"data\":{}}]",
       "bodyType": "INLINE",
       "filePath": "",
@@ -450,7 +696,12 @@
       "documentation": "Fires to /webhooks/quickbooks simulating QBO invoice 9001 voided for company 111222333",
       "method": "post",
       "uri": "http://localhost:8000/webhooks/quickbooks",
-      "headers": [{"key": "Content-Type", "value": "application/json"}],
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ],
       "body": "[{\"id\":\"sim-evt-voided-001\",\"type\":\"qbo.invoice.voided.v1\",\"intuitentityid\":\"9001\",\"intuitaccountid\":\"111222333\",\"data\":{}}]",
       "bodyType": "INLINE",
       "filePath": "",

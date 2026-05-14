@@ -46,7 +46,9 @@ def client(app, db):
 
 
 def _added_of(db, model_class) -> list:
-    return [c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], model_class)]
+    return [
+        c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], model_class)
+    ]
 
 
 def _valid_event(
@@ -72,7 +74,9 @@ class TestQuickbooksWebhookHappyPath:
     def _setup_db_for_known_company(self, db, company):
         db.execute.side_effect = [
             make_execute_result(scalar=company),  # company lookup
-            make_execute_result(scalar=None),      # duplicate cloudevent check → no duplicate
+            make_execute_result(
+                scalar=None
+            ),  # duplicate cloudevent check → no duplicate
         ]
 
     def test_returns_received_true(self, client, db, company):
@@ -119,7 +123,9 @@ class TestQuickbooksWebhookHappyPath:
                 make_execute_result(scalar=None),
             ]
 
-            client.post("/webhooks/quickbooks", json=[_valid_event(event_type=event_type)])
+            client.post(
+                "/webhooks/quickbooks", json=[_valid_event(event_type=event_type)]
+            )
 
             events = _added_of(db, WebhookEvent)
             assert events[0].operation == expected_op, f"failed for {event_type}"
@@ -135,7 +141,9 @@ class TestQuickbooksWebhookEdgeCases:
         """realmId not in companies table → no WebhookEvent or ApiLog written."""
         db.execute.return_value = make_execute_result(scalar=None)  # company not found
 
-        client.post("/webhooks/quickbooks", json=[_valid_event(realm_id="UNKNOWN_REALM")])
+        client.post(
+            "/webhooks/quickbooks", json=[_valid_event(realm_id="UNKNOWN_REALM")]
+        )
 
         db.add.assert_not_called()
 
@@ -143,8 +151,8 @@ class TestQuickbooksWebhookEdgeCases:
         """A second event with the same cloudevent_id is silently dropped."""
         existing_event = MagicMock(spec=WebhookEvent)
         db.execute.side_effect = [
-            make_execute_result(scalar=company),          # company lookup
-            make_execute_result(scalar=existing_event),   # duplicate found
+            make_execute_result(scalar=company),  # company lookup
+            make_execute_result(scalar=existing_event),  # duplicate found
         ]
 
         client.post("/webhooks/quickbooks", json=[_valid_event()])
@@ -162,7 +170,11 @@ class TestQuickbooksWebhookEdgeCases:
 
     def test_ignores_event_missing_invoice_id(self, client, db):
         """Event without intuitentityid is skipped."""
-        event = {"intuitaccountid": "REALM_001", "type": "Invoice.created", "id": "EVT_X"}
+        event = {
+            "intuitaccountid": "REALM_001",
+            "type": "Invoice.created",
+            "id": "EVT_X",
+        }
 
         resp = client.post("/webhooks/quickbooks", json=[event])
 
@@ -173,7 +185,10 @@ class TestQuickbooksWebhookEdgeCases:
         """Event type that contains no known operation is skipped."""
         db.execute.return_value = make_execute_result(scalar=company)
 
-        client.post("/webhooks/quickbooks", json=[_valid_event(event_type="Invoice.SomethingElse")])
+        client.post(
+            "/webhooks/quickbooks",
+            json=[_valid_event(event_type="Invoice.SomethingElse")],
+        )
 
         assert len(_added_of(db, WebhookEvent)) == 0
 
@@ -185,13 +200,41 @@ class TestQuickbooksWebhookEdgeCases:
 
         assert resp.status_code == 200
 
+    def test_dedup_race_returns_200_not_500(self, client, db, company):
+        """
+        Two concurrent webhook deliveries with the same cloudevent_id can both
+        pass the application-level dedup pre-check (it is not transactional).
+        The UNIQUE constraint on webhook_events.cloudevent_id is the
+        authoritative guard; the loser of the race must be treated as a
+        duplicate (200), not a server error (500).
+        """
+        from sqlalchemy.exc import IntegrityError
+
+        # Pretend the pre-check finds nothing (race: another tx hasn't committed
+        # yet) but the commit fails with a unique-constraint violation.
+        db.execute.side_effect = [
+            make_execute_result(scalar=company),
+            make_execute_result(scalar=None),
+        ]
+        orig = MagicMock()
+        orig.__str__ = lambda self: (
+            "duplicate key value violates unique constraint webhook_events_cloudevent_id_key"
+        )
+        db.commit.side_effect = IntegrityError("INSERT", {}, orig)
+
+        resp = client.post("/webhooks/quickbooks", json=[_valid_event()])
+
+        assert resp.status_code == 200
+        assert resp.json() == {"received": True}
+        db.rollback.assert_called()
+
     def test_processes_multiple_events_in_one_request(self, client, db, company):
         """A batch payload with two events results in two WebhookEvents."""
         db.execute.side_effect = [
             make_execute_result(scalar=company),  # company for event 1
-            make_execute_result(scalar=None),      # no duplicate for event 1
+            make_execute_result(scalar=None),  # no duplicate for event 1
             make_execute_result(scalar=company),  # company for event 2
-            make_execute_result(scalar=None),      # no duplicate for event 2
+            make_execute_result(scalar=None),  # no duplicate for event 2
         ]
         events = [
             _valid_event(invoice_id="QBO_001", cloudevent_id="EVT_A"),

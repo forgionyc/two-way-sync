@@ -65,7 +65,9 @@ def _sync_jobs(db):
 class TestCreateInvoice:
     def test_enqueues_create_job(self, db, company, customer):
         """create_invoice always enqueues a SyncJob with operation='create'."""
-        db.get.side_effect = lambda model, _id: company if model.__name__ == "Company" else customer
+        db.get.side_effect = lambda model, _id: (
+            company if model.__name__ == "Company" else customer
+        )
 
         create_invoice(_make_create_data(), db)
 
@@ -78,32 +80,48 @@ class TestCreateInvoice:
         """create_invoice sets invoice status to 'Draft' before sync."""
         from app.models.models import Invoice
 
-        db.get.side_effect = lambda model, _id: company if model.__name__ == "Company" else customer
+        db.get.side_effect = lambda model, _id: (
+            company if model.__name__ == "Company" else customer
+        )
 
         create_invoice(_make_create_data(), db)
 
-        invoices = [c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], Invoice)]
+        invoices = [
+            c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], Invoice)
+        ]
         assert invoices[0].status == "Draft"
 
     def test_records_invoice_history(self, db, company, customer):
         """create_invoice records a local_create history entry."""
         from app.models.models import InvoiceHistory
 
-        db.get.side_effect = lambda model, _id: company if model.__name__ == "Company" else customer
+        db.get.side_effect = lambda model, _id: (
+            company if model.__name__ == "Company" else customer
+        )
 
         create_invoice(_make_create_data(), db)
 
-        history = [c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], InvoiceHistory)]
+        history = [
+            c.args[0]
+            for c in db.add.call_args_list
+            if isinstance(c.args[0], InvoiceHistory)
+        ]
         assert len(history) == 1
         assert history[0].event_type == "local_create"
 
     def test_creates_invoice_items(self, db, company, customer):
         """create_invoice persists one InvoiceItem per item in the request."""
-        db.get.side_effect = lambda model, _id: company if model.__name__ == "Company" else customer
+        db.get.side_effect = lambda model, _id: (
+            company if model.__name__ == "Company" else customer
+        )
 
         create_invoice(_make_create_data(), db)
 
-        items = [c.args[0] for c in db.add.call_args_list if isinstance(c.args[0], InvoiceItem)]
+        items = [
+            c.args[0]
+            for c in db.add.call_args_list
+            if isinstance(c.args[0], InvoiceItem)
+        ]
         assert len(items) == 1
 
     def test_raises_404_if_company_not_found(self, db):
@@ -116,7 +134,9 @@ class TestCreateInvoice:
         assert "Company" in exc.value.detail
 
     def test_raises_404_if_customer_not_found(self, db, company):
-        db.get.side_effect = lambda model, _id: company if model.__name__ == "Company" else None
+        db.get.side_effect = lambda model, _id: (
+            company if model.__name__ == "Company" else None
+        )
 
         with pytest.raises(HTTPException) as exc:
             create_invoice(_make_create_data(), db)
