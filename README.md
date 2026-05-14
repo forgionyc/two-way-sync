@@ -20,7 +20,7 @@ The following assumptions are baked into the design. Each one narrows scope deli
 
 **The system is designed to support multiple invoice providers.** The `providers` table (seeded with `QuickBooks` and `Xero`) is foreign-keyed from `companies` so a future provider (Zoho, FreshBooks, etc.) can be added without a schema migration. Provider-specific dispatch logic is not yet factored out.
 
-**QBO fires a webhook back on every create or update we push.** When the outbound worker successfully creates or updates an invoice in QBO, QBO sends a corresponding `created` or `updated` event to our webhook endpoint. The inbound idempotency gate (SyncToken guard) exists specifically to absorb this echo without producing duplicate history rows or token regressions.
+**QBO fires a webhook back on every write we push.** When the outbound worker successfully creates, updates, voids, or deletes an invoice in QBO, QBO sends a corresponding event back to our webhook endpoint. The inbound idempotency gate (SyncToken guard for `created`/`updated`, status-mirror checks for `voided`/`deleted`) exists specifically to absorb these echoes without producing duplicate history rows or token regressions.
 
 **The webhook payload follows the CloudEvents envelope.** Inbound events are expected in this shape:
 
@@ -45,6 +45,10 @@ The following assumptions are baked into the design. Each one narrows scope deli
 **`Preferences:CustomTxnNumber` is `true` in QBO.** This preference lets the system control the `DocNumber` field on every invoice, which is set to the local `invoice_number` (e.g. `INV-2026-000000001`). Without it QBO auto-assigns its own DocNumber, which breaks the DocNumber-based reconciliation used on outbound create retries (edge case #5 in `DESIGN.md`).
 
 **Webhook signature verification is assumed but not implemented in this environment.** In production, the `intuit-signature` header would be verified per-company using `hmac.compare_digest` against a QBO-issued webhook verifier token. That token requires a live Intuit developer account to obtain; the Mockoon simulate routes carry no signature. The endpoint currently trusts any POST to `/webhooks/quickbooks`.
+
+**One company maps to exactly one QBO realm.** `Company.external_id` holds the realm and is the only routing key used by the inbound handler. Multi-realm companies (a single tenant with several QBO files) would need a join table and a richer routing layer, and are out of scope.
+
+**QBO `SyncToken` is monotonic and numeric.** The inbound out-of-order gate compares tokens as integers, so the contract assumes QBO never resets, recycles, or returns non-numeric tokens for an invoice. Non-numeric tokens are logged and the event is skipped rather than crashing the worker, but a real token reset (e.g. on a company data restore) would let echoes leak through the gate.
 
 ---
 
@@ -149,7 +153,7 @@ Serves the Mockoon environment defined in `quickbooks-mock.json` on `http://loca
 
 - `POST /v3/company/:companyId/invoice` (create / update / delete / void, dispatched by `?operation=` query param and request body fields)
 - `GET /v3/company/:companyId/invoice/:invoiceId` (sequential responses: `SyncToken=0` then `SyncToken=1` then it cycles)
-- `GET /v3/company/:companyId/query` (returns empty results)
+- `GET /v3/company/:companyId/query` (returns an empty result by default; returns a pre-existing invoice `Id=999`, `SyncToken=0` when the query string contains `DocNumber=INV-2026-RECONCILE-001`, used to drive the outbound-create reconciliation path on retry)
 - Four `POST /simulate/qbo/invoice/{created|updated|deleted|voided}` routes that fire a Mockoon callback to `http://localhost:8000/webhooks/quickbooks` so you can drive the inbound flow without a real Intuit webhook.
 
 ### 8. Start the application
@@ -242,7 +246,7 @@ Count remains `1`. The endpoint dedups by `cloudevent_id`.
 uv run pytest -q
 ```
 
-61 tests cover the four service-layer operations (create / update / delete / void), the inbound webhook handler for each event type including stale-token and already-applied skips, the outbound executor for each operation including the `external_invoice_id`-already-set short-circuit, and the `POST /webhooks/quickbooks` HTTP endpoint including dedup and unknown-realm cases. Tests use `MagicMock` databases; they do not require Docker or Postgres.
+75 tests cover the four service-layer operations (create / update / delete / void), the inbound webhook handler for each event type including stale-token, non-numeric-token, and already-applied skips, the outbound executor for each operation including the `external_invoice_id`-already-set short-circuit, DocNumber-based reconciliation on create retries, and the SyncToken-conflict path that flips an invoice to `sync_status='conflict'` when QBO state diverges from intent. The async `sync_worker` is exercised for exponential-backoff retries, `ConflictError` short-circuiting, and the `max_attempts` terminal path. The `POST /webhooks/quickbooks` HTTP endpoint is covered for dedup (including the `IntegrityError` race), unknown-realm drops, missing fields, and unrecognised event types. Tests use `MagicMock` databases; they do not require Docker or Postgres.
 
 ---
 
